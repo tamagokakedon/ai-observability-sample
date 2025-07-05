@@ -1,0 +1,141 @@
+{
+  "widgets": [
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "ai-recipe-analyzer", "ai_recipe_requests_total" ],
+          [ ".", "ai_recipe_request_duration_seconds" ]
+        ],
+        "period": 300,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Request Metrics",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "ai-recipe-analyzer", "ai_model_tokens_total", "model_id", "anthropic.claude-3-5-sonnet-20241022-v2:0" ],
+          [ ".", "ai_model_cost_usd", ".", "." ]
+        ],
+        "period": 300,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "AI Model Usage",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 6,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "ai-recipe-analyzer", "errors_total" ],
+          [ ".", "recipe_detections_total" ],
+          [ ".", "rag_searches_total" ]
+        ],
+        "period": 300,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Application Operations",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "x": 8,
+      "y": 6,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "ai-recipe-analyzer", "cache_operations_total", "result", "hit" ],
+          [ "...", "miss" ]
+        ],
+        "period": 300,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Cache Performance",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "x": 16,
+      "y": 6,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "ai-recipe-analyzer", "bedrock_api_duration_seconds" ],
+          [ ".", "knowledge_base_query_duration_seconds" ]
+        ],
+        "period": 300,
+        "stat": "Average",
+        "region": "us-east-1",
+        "title": "Performance Metrics",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        }
+      }
+    },
+    {
+      "type": "log",
+      "x": 0,
+      "y": 12,
+      "width": 24,
+      "height": 6,
+      "properties": {
+        "query": "SOURCE '/aws/ai-recipe-analyzer/ai-recipe-analyzer'\n| fields @timestamp, @message, correlation_id, request_id, level, operation\n| filter level = \"ERROR\"\n| sort @timestamp desc\n| limit 100",
+        "region": "us-east-1",
+        "title": "Recent Errors",
+        "view": "table"
+      }
+    },
+    {
+      "type": "log",
+      "x": 0,
+      "y": 18,
+      "width": 24,
+      "height": 6,
+      "properties": {
+        "query": "SOURCE '/aws/ai-recipe-analyzer/ai-recipe-analyzer'\n| fields @timestamp, correlation_id, operation, duration_seconds\n| filter operation like /ai_/\n| stats avg(duration_seconds) as avg_duration, max(duration_seconds) as max_duration, count() as request_count by operation\n| sort avg_duration desc",
+        "region": "us-east-1",
+        "title": "AI Operation Performance Analysis",
+        "view": "table"
+      }
+    }
+  ]
+}
